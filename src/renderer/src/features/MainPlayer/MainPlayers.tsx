@@ -1,5 +1,5 @@
-import MainPlayer from "./MainPlayer"
-import Playlist from "./Playlist"
+import MainPlayer from './MainPlayer'
+import Playlist from './Playlist'
 
 function MainPlayers(): React.JSX.Element {
   return (
