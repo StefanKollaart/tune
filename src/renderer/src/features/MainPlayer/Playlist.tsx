@@ -1,27 +1,25 @@
 import { usePlayer } from '@renderer/context/MainPlayerContext'
 import PlaylistItem from './PlaylistItem'
 import { useState } from 'react'
+import { Song } from '@renderer/types/song'
 
 function Playlist(): React.JSX.Element {
-  const { playlist } = usePlayer()
+  const { playlist, addToPlaylist } = usePlayer()
   const [isDragging, setIsDragging] = useState(false)
-  console.log(playlist)
 
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>): void => {
     event.preventDefault()
   }
 
   const handleDragEnter = (): void => {
-    console.log('Joe')
     setIsDragging(true)
   }
 
   const handleDragLeave = (): void => {
-    console.log('Joe')
     setIsDragging(false)
   }
 
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>): void => {
+  const handleDrop = async (e: React.DragEvent<HTMLDivElement>): Promise<void> => {
     e.preventDefault()
     e.stopPropagation()
     setIsDragging(false)
@@ -32,9 +30,15 @@ function Playlist(): React.JSX.Element {
     )
 
     if (audioFiles.length > 0) {
-      audioFiles.forEach((file) => {
-        const filePath = window.api.getFilePath(file)
-      })
+      try {
+        for (const file of audioFiles) {
+          const filePath = window.api.getFilePath(file)
+          const song: Song = await window.api.importAudioFile(filePath)
+          addToPlaylist(song)
+        }
+      } catch (error) {
+        console.error('Error importing files:', error)
+      }
     }
   }
 
@@ -46,20 +50,16 @@ function Playlist(): React.JSX.Element {
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
     >
-      <PlaylistItem
-        title="Nog Even Blijven"
-        artist="Douwe Bob, Meau"
-        duration="123"
-        artwork="https://npo-artistdb.b-cdn.net/images/Douwe-bob-Meau-Nog-even-blijven-cover.jpeg?aspect_ratio=501%3A500&width=500&height=500"
-        segue={true}
-      />
-      <PlaylistItem
-        title="Down 4 Whatever"
-        artist="Roxy Dekker"
-        duration="140"
-        artwork="https://images.genius.com/8193da821f4d3519c94afa3a749a8573.1000x1000x1.png"
-        segue={false}
-      />
+      {playlist.map((song) => (
+        <PlaylistItem
+          key={song.id}
+          title={song.title}
+          artist={song.artist}
+          duration={song.duration.toString()}
+          artwork={song.artwork || ''}
+          segue={false}
+        />
+      ))}
     </div>
   )
 }

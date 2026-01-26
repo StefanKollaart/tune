@@ -2,6 +2,7 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import { setupAudioHandlers } from './audio'
 
 function createWindow(): void {
   // Create the browser window.
@@ -49,6 +50,8 @@ app.whenReady().then(() => {
   app.on('browser-window-created', (_, window) => {
     optimizer.watchWindowShortcuts(window)
   })
+
+  setupAudioHandlers()
 
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
