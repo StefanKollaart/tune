@@ -10,7 +10,7 @@ function PlaylistItem({
 }: {
   title: string
   artist: string
-  duration: string
+  duration: number
   artwork: string
   segue: boolean
 }): React.JSX.Element {
@@ -25,7 +25,7 @@ function PlaylistItem({
         <button className={`cursor-pointer p-1 rounded-md ${segue && 'bg-stone-600'}`}>
           <ArrowDown size={20} />
         </button>
-        <p className="ps-2">{formatTimeFromSeconds(parseInt(duration))}</p>
+        <p className="ps-2">{formatTimeFromSeconds(duration)}</p>
       </div>
     </div>
   )
