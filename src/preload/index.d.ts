@@ -1,5 +1,5 @@
 import { ElectronAPI } from '@electron-toolkit/preload'
-import { Song } from '@renderer/types/song'
+import { Song } from '@renderer/types/SongType'
 
 declare global {
   interface Window {

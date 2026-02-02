@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Song } from '@renderer/types/song'
+import { Song } from '@renderer/types/SongType'
 
 interface UseDrop {
   isDragging: boolean

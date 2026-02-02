@@ -1,20 +1,19 @@
-import { Song } from '@renderer/types/song'
+import { MainPlayerContextType } from '@renderer/types/MainPlayerContextType'
+import { PlaylistItemType } from '@renderer/types/PlaylistItemType'
+import { SongType } from '@renderer/types/SongType'
 import { createContext, useContext, useState } from 'react'
-
-interface MainPlayerContextType {
-    playlist: Song[]
-    addToPlaylist: (song: Song) => void
-    removeFromPlaylist: (songId: string) => void
-    moveItem: (songId: string, underSongId: string) => void
-}
 
 const MainPlayerContext = createContext<MainPlayerContextType | undefined>(undefined)
 
 export function MainPlayerProvider({ children }: { children: React.ReactNode }): React.JSX.Element {
-  const [playlist, setPlaylist] = useState<Song[]>([])
+  const [playlist, setPlaylist] = useState<PlaylistItemType[]>([])
 
-  const addToPlaylist = (song: Song): void => {
-    setPlaylist((prevPlaylist) => [...prevPlaylist, song])
+  const addToPlaylist = (song: SongType): void => {
+    const playlistItem: PlaylistItemType = {
+      id: crypto.randomUUID(),
+      song
+    }
+    setPlaylist((prevPlaylist) => [...prevPlaylist, playlistItem])
   }
 
   const removeFromPlaylist = (songId: string): void => {
