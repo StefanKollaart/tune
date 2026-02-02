@@ -5,6 +5,7 @@ interface MainPlayerContextType {
     playlist: Song[]
     addToPlaylist: (song: Song) => void
     removeFromPlaylist: (songId: string) => void
+    moveItem: (songId: string, underSongId: string) => void
 }
 
 const MainPlayerContext = createContext<MainPlayerContextType | undefined>(undefined)
@@ -20,12 +21,24 @@ export function MainPlayerProvider({ children }: { children: React.ReactNode }):
     setPlaylist((prevPlaylist) => prevPlaylist.filter((song) => song.id !== songId))
   }
 
+  const moveItem = (songId: string, underSongId: string): void => {
+    const songIndex = playlist.findIndex((song) => song.id === songId)
+    const underSongIndex = playlist.findIndex((song) => song.id === underSongId)
+    if (songIndex === -1 || underSongIndex === -1) return
+
+    const updatedPlaylist = [...playlist]
+    const [movedSong] = updatedPlaylist.splice(songIndex, 1)
+    updatedPlaylist.splice(underSongIndex, 0, movedSong)
+    setPlaylist(updatedPlaylist)
+  }
+
   return (
     <MainPlayerContext.Provider
       value={{
         playlist,
         addToPlaylist,
-        removeFromPlaylist
+        removeFromPlaylist,
+        moveItem
       }}
     >
       {children}
