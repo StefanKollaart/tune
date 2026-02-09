@@ -43,7 +43,7 @@ export const setupAudioHandlers = () => {
 
     return {
       id: fileHash,
-      url: newPath,
+      filePath: newPath,
       ...metadata
     }
   })

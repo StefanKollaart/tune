@@ -4,5 +4,6 @@ export interface SongType {
   artist: string
   artwork: string
   duration: number
+  filePath: string
   url: string
 }

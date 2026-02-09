@@ -15,7 +15,6 @@ function Playlist(): React.JSX.Element {
     >
       {playlist.map((playlistItem) => {
         const song = playlistItem.song
-        console.log(playlistItem);
 
         return (
           <PlaylistItem
