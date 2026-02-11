@@ -24,38 +24,8 @@ export function MainPlayerProvider({ children }: { children: React.ReactNode }):
   // Audio instances
   const audioA = useRef<HTMLAudioElement | null>(null)
   const audioB = useRef<HTMLAudioElement | null>(null)
-
-  // Initialize audio instances
-  useEffect(() => {
-    audioA.current = new Audio()
-    audioB.current = new Audio()
-
-    return () => {
-      audioA.current?.pause()
-      audioB.current?.pause()
-      audioA.current = null
-      audioB.current = null
-    }
-  }, [])
-
-  // Update current time for both players
-  useEffect(() => {
-    const updatePlayerTime = (
-      audio: HTMLAudioElement,
-      setter: React.Dispatch<React.SetStateAction<PlayerStateType>>
-    ) => {
-      if (!audio.paused) {
-        setter((prev) => ({ ...prev, currentTime: audio.currentTime }))
-      }
-    }
-
-    const intervalId = setInterval(() => {
-      if (audioA.current) updatePlayerTime(audioA.current, setPlayerA)
-      if (audioB.current) updatePlayerTime(audioB.current, setPlayerB)
-    }, 100) // Update every 100ms
-
-    return () => clearInterval(intervalId)
-  }, [])
+  const analyserA = useRef<AnalyserNode | null>(null)
+  const analyserB = useRef<AnalyserNode | null>(null)
 
   // Playlist functions
   const addToPlaylist = (song: SongType): void => {
@@ -84,35 +54,22 @@ export function MainPlayerProvider({ children }: { children: React.ReactNode }):
   }
 
   const loadTrack = (playerId: 'A' | 'B', playlistItem: PlaylistItemType): void => {
-    console.log('Loading track:', playlistItem.song.title, 'into player', playerId)
     const setter = playerId === 'A' ? setPlayerA : setPlayerB
     const audio = playerId === 'A' ? audioA.current : audioB.current
 
     if (!audio) return
 
-    // Convert file path to file:// URL for Electron
     const fileUrl = `file://${playlistItem.song.filePath}`
-    console.log('File URL:', fileUrl)
 
     audio.src = fileUrl
     audio.load()
 
-    audio.onloadedmetadata = () => {
-      setter((prevState) => ({
-        ...prevState,
-        currentTrack: playlistItem,
-        currentTime: 0,
-        duration: audio.duration,
-        isPlaying: false
-      }))
-    }
-
-    audio.onended = () => {
-      setter((prev) => ({ ...prev, isPlaying: false, currentTime: 0 }))
-      if (playlist.length > 0) {
-        loadTrack(playerId, playlist[0])
-      }
-    }
+    setter((prevState) => ({
+      ...prevState,
+      currentTrack: playlistItem,
+      currentTime: 0,
+      isPlaying: true
+    }))
 
     removeFromPlaylist(playlistItem.id)
   }
@@ -126,6 +83,7 @@ export function MainPlayerProvider({ children }: { children: React.ReactNode }):
     if (!getter.currentTrack) {
       if (playlist.length > 0) {
         loadTrack(playerId, playlist[0])
+        audio.play()
         return
       }
     }
@@ -167,6 +125,91 @@ export function MainPlayerProvider({ children }: { children: React.ReactNode }):
     const setter = playerId === 'A' ? setPlayerA : setPlayerB
     setter((prev) => ({ ...prev, currentTime: time }))
   }
+
+  const handleTrackEnd = (playerId: 'A' | 'B'): void => {
+    const setter = playerId === 'A' ? setPlayerA : setPlayerB
+
+    setter((prev) => ({
+      ...prev,
+      currentTrack: null,
+      isPlaying: false,
+      currentTime: 0
+    }))
+  }
+
+  useEffect(() => {
+    audioA.current = new Audio()
+    audioB.current = new Audio()
+
+    const contextA = new AudioContext()
+    const sourceA = contextA.createMediaElementSource(audioA.current)
+
+    analyserA.current = contextA.createAnalyser()
+    analyserA.current.fftSize = 32
+
+    sourceA.connect(analyserA.current)
+    analyserA.current.connect(contextA.destination)
+
+    const contextB = new AudioContext()
+    const sourceB = contextB.createMediaElementSource(audioB.current)
+    analyserB.current = contextB.createAnalyser()
+    analyserB.current.fftSize = 32
+
+    sourceB.connect(analyserB.current)
+    analyserB.current.connect(contextB.destination)
+
+    audioA.current.addEventListener('ended', () => {
+      handleTrackEnd('A')
+    })
+
+    audioB.current.addEventListener('ended', () => {
+      handleTrackEnd('B')
+    })
+
+    return () => {
+      audioA.current?.removeEventListener('ended', () => {})
+      audioB.current?.removeEventListener('ended', () => {})
+
+      audioA.current?.pause()
+      audioB.current?.pause()
+      audioA.current = null
+      audioB.current = null
+    }
+  }, [])
+
+  useEffect(() => {
+    const getVolumeDots = (analyser: AnalyserNode | null): number => {
+      if (!analyser) return 0
+      
+      const dataArray = new Uint8Array(analyser.frequencyBinCount)
+      analyser.getByteFrequencyData(dataArray)
+      const average = dataArray.reduce((sum, value) => sum + value, 0) / dataArray.length
+      const amountOfDots = 15
+      return Math.floor((average / 255) * amountOfDots)
+    }
+
+    const updatePlayerTime = (
+      audio: HTMLAudioElement,
+      analyser: AnalyserNode | null,
+      setter: React.Dispatch<React.SetStateAction<PlayerStateType>>
+    ): void => {
+      if (!audio.paused) {
+        setter((prev) => ({
+          ...prev,
+          duration: audio.duration,
+          currentTime: audio.currentTime,
+          volume: getVolumeDots(analyser)
+        }))
+      }
+    }
+
+    const intervalId = setInterval(() => {
+      if (audioA.current) updatePlayerTime(audioA.current, analyserA.current, setPlayerA)
+      if (audioB.current) updatePlayerTime(audioB.current, analyserB.current, setPlayerB)
+    }, 100)
+
+    return () => clearInterval(intervalId)
+  }, [])
 
   return (
     <MainPlayerContext.Provider
