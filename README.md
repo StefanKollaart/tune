@@ -2,10 +2,10 @@
 
 Live Radio Playout voor kleine omroepen. Gebouwd in React / Electron / Typescript.
 
-## In progress
+## Features
 
-- [x] Main Players
-- [x] Playlist
+- [ ] **Main Players** - In Progress 🚧
+- [ ] **Playlist** - In Progress 🚧
 - [ ] File browser
 - [ ] Mix editor
 - [ ] BGM players
