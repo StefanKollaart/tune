@@ -1,34 +1,21 @@
-# tune
+# Tune App
 
-An Electron application with React and TypeScript
+Live Radio Playout voor kleine omroepen. Gebouwd in React / Electron / Typescript.
 
-## Recommended IDE Setup
+## In progress
 
-- [VSCode](https://code.visualstudio.com/) + [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) + [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+- [x] Main Players
+- [x] Playlist
+- [ ] File browser
+- [ ] Mix editor
+- [ ] BGM players
+- [ ] Audio management
 
-## Project Setup
+![Tune Player](tune-player.png)
 
-### Install
-
-```bash
-$ npm install
-```
-
-### Development
-
-```bash
-$ npm run dev
-```
-
-### Build
+## Starten maar!
 
 ```bash
-# For windows
-$ npm run build:win
-
-# For macOS
-$ npm run build:mac
-
-# For Linux
-$ npm run build:linux
+npm install
+npm run dev
 ```
