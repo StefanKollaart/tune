@@ -17,7 +17,7 @@ function MainPlayer({ playerId }: { playerId: 'A' | 'B' }): React.JSX.Element {
   }
 
   const playerColor = playerId === 'A' ? 'primary' : 'secondary'
-  const playerBackgroundColor = `bg-${playerColor}-950`
+  const playerBackgroundColor = playerColor === 'primary' ? 'bg-primary-600' : 'bg-secondary-600'
 
   return (
     <div className="bg-stone-800 rounded-lg w-full">
