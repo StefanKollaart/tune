@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { SongType } from '@renderer/types/SongType'
 
-interface UseDrop {
+interface UseDropType {
   isDragging: boolean
   dropProps: {
     onDragOver: (e: React.DragEvent<HTMLDivElement>) => void
@@ -11,7 +11,7 @@ interface UseDrop {
   }
 }
 
-export function useDrop(onSongImported: (song: SongType) => void): UseDrop {
+export function useDrop(onSongImported: (song: SongType) => void): UseDropType {
   const [isDragging, setIsDragging] = useState(false)
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>): void => {
