@@ -5,11 +5,15 @@ import { usePlayer } from '@renderer/context/MainPlayerContext'
 import MainPlayerData from './MainPlayerData'
 
 function MainPlayer({ playerId }: { playerId: 'A' | 'B' }): React.JSX.Element {
-  const { playerA, playerB, play, pause } = usePlayer()
+  const { playerA, playerB, play, pause, updateTime } = usePlayer()
   const player = playerId === 'A' ? playerA : playerB
 
   const handlePlayPause = (): void => {
     player.isPlaying ? pause(playerId) : play(playerId)
+  }
+
+  const handleSeek = (time: number): void => {
+    updateTime(playerId, time)
   }
 
   const playerColor = playerId === 'A' ? 'primary' : 'secondary'
@@ -46,6 +50,7 @@ function MainPlayer({ playerId }: { playerId: 'A' | 'B' }): React.JSX.Element {
         <ProgressBar
           currentTime={player.currentTime}
           duration={player.currentTrack?.song.duration || 0}
+          onSeek={handleSeek}
         />
       </div>
     </div>

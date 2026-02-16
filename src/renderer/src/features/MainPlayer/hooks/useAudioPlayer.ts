@@ -33,6 +33,67 @@ export function useAudioPlayer(
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const analyserRef = useRef<AnalyserNode | null>(null)
 
+  const loadTrack = useCallback(
+    (playlistItem: PlaylistItemType): void => {
+      const audio = audioRef.current
+      if (!audio) return
+
+      audio.src = `file://${playlistItem.song.filePath}`
+      audio.load()
+
+      setPlayerState((prev) => ({
+        ...prev,
+        currentTrack: playlistItem,
+        currentTime: 0,
+        isPlaying: true
+      }))
+
+      removeFromPlaylist(playlistItem.id)
+    },
+    [removeFromPlaylist]
+  )
+
+  const play = useCallback((): void => {
+    const audio = audioRef.current
+    if (!audio) return
+
+    if (!playerState.currentTrack) {
+      if (playlist.length > 0) {
+        loadTrack(playlist[0])
+        audio.play()
+        return
+      }
+    }
+
+    audio.play()
+    setPlayerState((prev) => ({ ...prev, isPlaying: true }))
+  }, [playerState.currentTrack, playlist, loadTrack])
+
+  const pause = (): void => {
+    const audio = audioRef.current
+    if (!audio) return
+
+    audio.pause()
+    setPlayerState((prev) => ({ ...prev, isPlaying: false }))
+  }
+
+  const stop = (): void => {
+    const audio = audioRef.current
+    if (!audio) return
+
+    audio.pause()
+    audio.currentTime = 0
+    setPlayerState((prev) => ({ ...prev, isPlaying: false, currentTime: 0 }))
+  }
+
+  const updateTime = (time: number): void => {
+    const audio = audioRef.current
+    if (!audio) return
+
+    audio.currentTime = time
+    setPlayerState((prev) => ({ ...prev, currentTime: time }))
+  }
+
   const handleTrackEnd = useCallback((): void => {
     setPlayerState((prev) => ({
       ...prev,
@@ -88,67 +149,6 @@ export function useAudioPlayer(
     }, 100)
 
     return () => clearInterval(intervalId)
-  }, [])
-
-  const loadTrack = useCallback(
-    (playlistItem: PlaylistItemType): void => {
-      const audio = audioRef.current
-      if (!audio) return
-
-      audio.src = `file://${playlistItem.song.filePath}`
-      audio.load()
-
-      setPlayerState((prev) => ({
-        ...prev,
-        currentTrack: playlistItem,
-        currentTime: 0,
-        isPlaying: true
-      }))
-
-      removeFromPlaylist(playlistItem.id)
-    },
-    [removeFromPlaylist]
-  )
-
-  const play = useCallback((): void => {
-    const audio = audioRef.current
-    if (!audio) return
-
-    if (!playerState.currentTrack) {
-      if (playlist.length > 0) {
-        loadTrack(playlist[0])
-        audio.play()
-        return
-      }
-    }
-
-    audio.play()
-    setPlayerState((prev) => ({ ...prev, isPlaying: true }))
-  }, [playerState.currentTrack, playlist, loadTrack])
-
-  const pause = useCallback((): void => {
-    const audio = audioRef.current
-    if (!audio) return
-
-    audio.pause()
-    setPlayerState((prev) => ({ ...prev, isPlaying: false }))
-  }, [])
-
-  const stop = useCallback((): void => {
-    const audio = audioRef.current
-    if (!audio) return
-
-    audio.pause()
-    audio.currentTime = 0
-    setPlayerState((prev) => ({ ...prev, isPlaying: false, currentTime: 0 }))
-  }, [])
-
-  const updateTime = useCallback((time: number): void => {
-    const audio = audioRef.current
-    if (!audio) return
-
-    audio.currentTime = time
-    setPlayerState((prev) => ({ ...prev, currentTime: time }))
   }, [])
 
   return { playerState, loadTrack, play, pause, stop, updateTime }
