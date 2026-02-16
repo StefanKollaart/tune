@@ -1,10 +1,12 @@
 interface ProgressBarProps {
   currentTime: number
   duration: number
+  color?: 'primary' | 'secondary'
   onSeek?: (time: number) => void
 }
 
-function ProgressBar({ currentTime, duration, onSeek }: ProgressBarProps): React.JSX.Element {
+function ProgressBar({ currentTime, duration, color = 'primary', onSeek }: ProgressBarProps): React.JSX.Element {
+  const colorClass = color === 'primary' ? 'bg-primary-400' : 'bg-secondary-400'
   const handleClick = (e: React.MouseEvent<HTMLDivElement>): void => {
     if (!onSeek || duration === 0) return
 
@@ -21,7 +23,7 @@ function ProgressBar({ currentTime, duration, onSeek }: ProgressBarProps): React
   return (
     <div className="w-full h-2 bg-stone-700 rounded-full cursor-pointer" onClick={handleClick}>
       <div
-        className="h-full bg-blue-500 rounded-full transition-all"
+        className={`h-full ${colorClass} rounded-full transition-all`}
         style={{ width: `${progress}%` }}
       />
     </div>
