@@ -2,20 +2,38 @@ import PlaylistItem from './PlaylistItem'
 import { usePlayer } from '@renderer/context/MainPlayerContext'
 import { useDrop } from './hooks/useDrop'
 import { useDrag } from './hooks/useDrag'
-
 function Playlist(): React.JSX.Element {
-  const { playlist, addToPlaylist, addRandomSongs, moveItem } = usePlayer()
+  const { playlist, playerA, playerB, addToPlaylist, addRandomSongs, moveItem } = usePlayer()
   const { isDragging, dropProps } = useDrop(addToPlaylist)
   const { draggedItem, setDraggedItem, dropTarget, setDropTarget, handleDrop } = useDrag(moveItem)
+
+  const activeTracks = [playerA, playerB]
+    .filter((p) => p.currentTrack !== null && p.loadedAt !== null)
+    .sort((a, b) => a.loadedAt! - b.loadedAt!)
 
   return (
     <div
       className={`bg-stone-800 rounded-lg p-4 flex-1 overflow-auto min-h-0 border-2 ${isDragging ? 'border-dashed border-stone-500' : 'border-transparent'}`}
       {...dropProps}
     >
+      {activeTracks.map((player) => {
+        const song = player.currentTrack!.song
+        return (
+          <PlaylistItem
+            key={`active-${player.id}`}
+            id={player.id}
+            title={song.title}
+            artist={song.artist}
+            duration={song.duration}
+            artwork={song.artwork || ''}
+            segue={false}
+            mainPlayer={player.id}
+          />
+        )
+      })}
+
       {playlist.map((playlistItem) => {
         const song = playlistItem.song
-
         return (
           <PlaylistItem
             key={playlistItem.id}

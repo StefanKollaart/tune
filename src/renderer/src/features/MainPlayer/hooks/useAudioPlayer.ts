@@ -17,13 +17,15 @@ const initialPlayerState: PlayerStateType = {
   currentTrack: null,
   currentTime: 0,
   duration: 0,
-  volume: 1
+  volume: 1,
+  loadedAt: null
 }
 
 export function useAudioPlayer(
   playerId: 'A' | 'B',
   playlist: PlaylistItemType[],
-  removeFromPlaylist: (playlistItemId: string) => void
+  removeFromPlaylist: (playlistItemId: string) => void,
+  loadOrderCounter: React.RefObject<number>
 ): UseAudioPlayerType {
   const [playerState, setPlayerState] = useState<PlayerStateType>({
     ...initialPlayerState,
@@ -45,12 +47,13 @@ export function useAudioPlayer(
         ...prev,
         currentTrack: playlistItem,
         currentTime: 0,
-        isPlaying: true
+        isPlaying: true,
+        loadedAt: ++loadOrderCounter.current
       }))
 
       removeFromPlaylist(playlistItem.id)
     },
-    [removeFromPlaylist]
+    [removeFromPlaylist, loadOrderCounter]
   )
 
   const play = useCallback((): void => {
@@ -84,7 +87,13 @@ export function useAudioPlayer(
     audio.pause()
     audio.currentTime = 0
     audio.src = ''
-    setPlayerState((prev) => ({ ...prev, isPlaying: false, currentTrack: null, currentTime: 0 }))
+    setPlayerState((prev) => ({
+      ...prev,
+      isPlaying: false,
+      currentTrack: null,
+      currentTime: 0,
+      loadedAt: null
+    }))
   }
 
   const updateTime = (time: number): void => {
@@ -100,7 +109,8 @@ export function useAudioPlayer(
       ...prev,
       currentTrack: null,
       isPlaying: false,
-      currentTime: 0
+      currentTime: 0,
+      loadedAt: null
     }))
   }, [])
 

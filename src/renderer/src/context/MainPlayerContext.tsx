@@ -2,15 +2,16 @@ import { MainPlayerContextType } from '@renderer/types/MainPlayerContextType'
 import { PlaylistItemType } from '@renderer/types/PlaylistItemType'
 import { usePlaylist } from '@renderer/features/MainPlayer/hooks/usePlaylist'
 import { useAudioPlayer } from '@renderer/features/MainPlayer/hooks/useAudioPlayer'
-import { createContext, useContext } from 'react'
+import { createContext, useContext, useRef } from 'react'
 
 const MainPlayerContext = createContext<MainPlayerContextType | undefined>(undefined)
 
 export function MainPlayerProvider({ children }: { children: React.ReactNode }): React.JSX.Element {
   const { playlist, addToPlaylist, addRandomSongs, removeFromPlaylist, moveItem } = usePlaylist()
+  const loadOrderCounter = useRef(0)
 
-  const playerAHook = useAudioPlayer('A', playlist, removeFromPlaylist)
-  const playerBHook = useAudioPlayer('B', playlist, removeFromPlaylist)
+  const playerAHook = useAudioPlayer('A', playlist, removeFromPlaylist, loadOrderCounter)
+  const playerBHook = useAudioPlayer('B', playlist, removeFromPlaylist, loadOrderCounter)
 
   const getPlayer = (playerId: 'A' | 'B'): typeof playerAHook =>
     playerId === 'A' ? playerAHook : playerBHook
