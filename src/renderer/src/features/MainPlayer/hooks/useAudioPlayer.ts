@@ -83,7 +83,8 @@ export function useAudioPlayer(
 
     audio.pause()
     audio.currentTime = 0
-    setPlayerState((prev) => ({ ...prev, isPlaying: false, currentTime: 0 }))
+    audio.src = ''
+    setPlayerState((prev) => ({ ...prev, isPlaying: false, currentTrack: null, currentTime: 0 }))
   }
 
   const updateTime = (time: number): void => {

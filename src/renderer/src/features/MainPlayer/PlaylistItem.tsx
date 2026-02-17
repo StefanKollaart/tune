@@ -27,17 +27,17 @@ function PlaylistItem({
   onDrop: () => void
 }): React.JSX.Element {
   return (
-    <div className="relative">
+    <div className="relative pe-2 mb-2">
       {showDropIndicator && <div className="absolute inset-0 bg-white opacity-25 rounded-md"></div>}
       <div
-        className="flex mb-2"
+        className="flex"
         draggable
         onDragStart={() => setDrag(id)}
         onDragOver={onDragOver}
         onDragEnd={onDrop}
         onDrop={onDrop}
       >
-        <img src={artwork} alt={`${title} artwork`} className="w-12 h-12 rounded-md mr-4" />
+        <img src={artwork} alt={`${title} artwork`} className="w-10 h-10 rounded-md mr-4" />
         <div className="flex flex-col justify-center">
           <span className="font-semibold text-white">{title}</span>
           <span className="text-sm text-gray-400">{artist}</span>

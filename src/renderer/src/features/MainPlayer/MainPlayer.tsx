@@ -6,11 +6,15 @@ import MainPlayerArtwork from './MainPlayerArtwork'
 import MainPlayerData from './MainPlayerData'
 
 function MainPlayer({ playerId }: { playerId: 'A' | 'B' }): React.JSX.Element {
-  const { playerA, playerB, play, pause, updateTime } = usePlayer()
+  const { playerA, playerB, play, pause, stop, updateTime } = usePlayer()
   const player = playerId === 'A' ? playerA : playerB
 
   const handlePlayPause = (): void => {
     player.isPlaying ? pause(playerId) : play(playerId)
+  }
+
+  const handleStop = (): void => {
+    stop(playerId)
   }
 
   const handleSeek = (time: number): void => {
@@ -32,7 +36,11 @@ function MainPlayer({ playerId }: { playerId: 'A' | 'B' }): React.JSX.Element {
         <div className="flex-1 ps-2 min-w-0">
           <MainPlayerData song={player.currentTrack?.song} currentTime={player.currentTime} />
           <div className="mb-4">
-            <MediaControls isPlaying={player.isPlaying} onPlayPause={handlePlayPause} />
+            <MediaControls
+              isPlaying={player.isPlaying}
+              onPlayPause={handlePlayPause}
+              onStop={handleStop}
+            />
           </div>
         </div>
         <div className="ml-auto flex items-start gap-4">

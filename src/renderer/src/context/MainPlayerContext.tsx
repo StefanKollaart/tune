@@ -7,7 +7,7 @@ import { createContext, useContext } from 'react'
 const MainPlayerContext = createContext<MainPlayerContextType | undefined>(undefined)
 
 export function MainPlayerProvider({ children }: { children: React.ReactNode }): React.JSX.Element {
-  const { playlist, addToPlaylist, removeFromPlaylist, moveItem } = usePlaylist()
+  const { playlist, addToPlaylist, addRandomSongs, removeFromPlaylist, moveItem } = usePlaylist()
 
   const playerAHook = useAudioPlayer('A', playlist, removeFromPlaylist)
   const playerBHook = useAudioPlayer('B', playlist, removeFromPlaylist)
@@ -22,6 +22,7 @@ export function MainPlayerProvider({ children }: { children: React.ReactNode }):
         playerA: playerAHook.playerState,
         playerB: playerBHook.playerState,
         addToPlaylist,
+        addRandomSongs,
         removeFromPlaylist,
         moveItem,
         loadTrack: (playerId: 'A' | 'B', playlistItem: PlaylistItemType) =>

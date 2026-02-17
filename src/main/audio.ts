@@ -23,7 +23,32 @@ const getMetadata = async (filePath: string) => {
   }
 }
 
+const AUDIO_EXTENSIONS = ['.mp3', '.wav', '.ogg', '.m4a', '.flac']
+
 export const setupAudioHandlers = () => {
+  ipcMain.handle('get-random-songs', async (_, count: number) => {
+    try {
+      const files = await fs.readdir(LIBRARY_PATH)
+      const audioFiles = files.filter((f) =>
+        AUDIO_EXTENSIONS.includes(path.extname(f).toLowerCase())
+      )
+      if (audioFiles.length === 0) return []
+
+      const shuffled = audioFiles.sort(() => Math.random() - 0.5).slice(0, count)
+      const songs = await Promise.all(
+        shuffled.map(async (file) => {
+          const filePath = path.join(LIBRARY_PATH, file)
+          const id = path.basename(file, path.extname(file))
+          const metadata = await getMetadata(filePath)
+          return { id, filePath, ...metadata }
+        })
+      )
+      return songs
+    } catch {
+      return []
+    }
+  })
+
   ipcMain.handle('import-audio-file', async (_, filePath: string) => {
     await fs.mkdir(LIBRARY_PATH, { recursive: true })
 

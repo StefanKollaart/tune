@@ -7,6 +7,7 @@ export interface MainPlayerContextType {
     playerA: PlayerStateType
     playerB: PlayerStateType
     addToPlaylist: (song: SongType) => void
+    addRandomSongs: () => Promise<void>
     removeFromPlaylist: (songId: string) => void
     moveItem: (songId: string, underSongId: string) => void
     loadTrack: (playerId: 'A' | 'B', playlistItem: PlaylistItemType) => void

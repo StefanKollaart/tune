@@ -7,6 +7,7 @@ declare global {
     api: {
       getFilePath: (file: File) => string
       importAudioFile: (filePath: string) => Promise<SongType>
+      getRandomSongs: (count: number) => Promise<SongType[]>
     }
   }
 }

@@ -5,6 +5,7 @@ import { SongType } from '@renderer/types/SongType'
 export interface UsePlaylistReturn {
   playlist: PlaylistItemType[]
   addToPlaylist: (song: SongType) => void
+  addRandomSongs: () => Promise<void>
   removeFromPlaylist: (playlistItemId: string) => void
   moveItem: (songId: string, underSongId: string) => void
 }
@@ -18,6 +19,11 @@ export function usePlaylist(): UsePlaylistReturn {
       song
     }
     setPlaylist((prevPlaylist) => [...prevPlaylist, playlistItem])
+  }
+
+  const addRandomSongs = async (): Promise<void> => {
+    const songs = await window.api.getRandomSongs(3)
+    songs.forEach((song) => addToPlaylist(song))
   }
 
   const removeFromPlaylist = (playlistItemId: string): void => {
@@ -39,5 +45,5 @@ export function usePlaylist(): UsePlaylistReturn {
     })
   }
 
-  return { playlist, addToPlaylist, removeFromPlaylist, moveItem }
+  return { playlist, addToPlaylist, addRandomSongs, removeFromPlaylist, moveItem }
 }
