@@ -3,7 +3,16 @@ import { usePlayer } from '@renderer/context/MainPlayerContext'
 import { useDrop } from './hooks/useDrop'
 import { useDrag } from './hooks/useDrag'
 function Playlist(): React.JSX.Element {
-  const { playlist, playerA, playerB, addToPlaylist, addRandomSongs, moveItem } = usePlayer()
+  const {
+    playlist,
+    playerA,
+    playerB,
+    addToPlaylist,
+    addRandomSongs,
+    moveItem,
+    toggleSegue,
+    toggleActiveTrackSegue
+  } = usePlayer()
   const { isDragging, dropProps } = useDrop(addToPlaylist)
   const { draggedItem, setDraggedItem, dropTarget, setDropTarget, handleDrop } = useDrag(moveItem)
 
@@ -26,7 +35,8 @@ function Playlist(): React.JSX.Element {
             artist={song.artist}
             duration={song.duration}
             artwork={song.artwork || ''}
-            segue={false}
+            segue={player.currentTrack!.segue ?? false}
+            onToggleSegue={() => toggleActiveTrackSegue(player.id)}
             mainPlayer={player.id}
             progress={player.duration > 0 ? player.currentTime / player.duration : 0}
           />
@@ -43,7 +53,8 @@ function Playlist(): React.JSX.Element {
             artist={song.artist}
             duration={song.duration}
             artwork={song.artwork || ''}
-            segue={false}
+            segue={playlistItem.segue ?? false}
+            onToggleSegue={() => toggleSegue(playlistItem.id)}
             showDropIndicator={dropTarget === playlistItem.id}
             isDragging={draggedItem === playlistItem.id}
             onDragOver={() => setDropTarget(playlistItem.id)}

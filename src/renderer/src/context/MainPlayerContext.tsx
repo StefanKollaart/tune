@@ -7,7 +7,8 @@ import { createContext, useContext, useRef } from 'react'
 const MainPlayerContext = createContext<MainPlayerContextType | undefined>(undefined)
 
 export function MainPlayerProvider({ children }: { children: React.ReactNode }): React.JSX.Element {
-  const { playlist, addToPlaylist, addRandomSongs, removeFromPlaylist, moveItem } = usePlaylist()
+  const { playlist, addToPlaylist, addRandomSongs, removeFromPlaylist, moveItem, toggleSegue } =
+    usePlaylist()
   const loadOrderCounter = useRef(0)
 
   const playerAHook = useAudioPlayer('A', playlist, removeFromPlaylist, loadOrderCounter)
@@ -26,6 +27,8 @@ export function MainPlayerProvider({ children }: { children: React.ReactNode }):
         addRandomSongs,
         removeFromPlaylist,
         moveItem,
+        toggleSegue,
+        toggleActiveTrackSegue: (playerId: 'A' | 'B') => getPlayer(playerId).toggleSegue(),
         loadTrack: (playerId: 'A' | 'B', playlistItem: PlaylistItemType) =>
           getPlayer(playerId).loadTrack(playlistItem),
         play: (playerId: 'A' | 'B') => getPlayer(playerId).play(),

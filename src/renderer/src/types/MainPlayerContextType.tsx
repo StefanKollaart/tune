@@ -10,6 +10,8 @@ export interface MainPlayerContextType {
     addRandomSongs: () => Promise<void>
     removeFromPlaylist: (songId: string) => void
     moveItem: (songId: string, underSongId: string) => void
+    toggleSegue: (playlistItemId: string) => void
+    toggleActiveTrackSegue: (playerId: 'A' | 'B') => void
     loadTrack: (playerId: 'A' | 'B', playlistItem: PlaylistItemType) => void
     play: (playerId: 'A' | 'B') => void
     pause: (playerId: 'A' | 'B') => void

@@ -9,6 +9,7 @@ export interface UseAudioPlayerType {
   pause: () => void
   stop: () => void
   updateTime: (time: number) => void
+  toggleSegue: () => void
 }
 
 const initialPlayerState: PlayerStateType = {
@@ -162,5 +163,12 @@ export function useAudioPlayer(
     return () => clearInterval(intervalId)
   }, [])
 
-  return { playerState, loadTrack, play, pause, stop, updateTime }
+  const toggleSegue = (): void => {
+    setPlayerState((prev) => {
+      if (!prev.currentTrack) return prev
+      return { ...prev, currentTrack: { ...prev.currentTrack, segue: !prev.currentTrack.segue } }
+    })
+  }
+
+  return { playerState, loadTrack, play, pause, stop, updateTime, toggleSegue }
 }

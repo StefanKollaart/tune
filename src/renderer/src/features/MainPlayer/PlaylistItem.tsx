@@ -13,7 +13,8 @@ function PlaylistItem({
   progress,
   onDragOver,
   setDrag,
-  onDrop
+  onDrop,
+  onToggleSegue
 }: {
   id: string
   title: string
@@ -28,6 +29,7 @@ function PlaylistItem({
   onDragOver?: () => void
   setDrag?: (itemId: string) => void
   onDrop?: () => void
+  onToggleSegue?: () => void
 }): React.JSX.Element {
   const bgColor = mainPlayer ? (mainPlayer === 'A' ? 'bg-primary-600' : 'bg-secondary-600') : null
   const bgColorTransparent = mainPlayer
@@ -68,7 +70,10 @@ function PlaylistItem({
           <span className={`text-sm ${accentColor}`}>{artist}</span>
         </div>
         <div className={`ml-auto text-sm flex items-center ${accentColor}`}>
-          <button className={`cursor-pointer p-1 rounded-md ${segue && 'bg-stone-600'}`}>
+          <button
+            className={`cursor-pointer p-1 rounded-md ${segue ? 'bg-white text-stone-900' : ''}`}
+            onClick={onToggleSegue}
+          >
             <ArrowDown size={20} />
           </button>
           <p className="ps-2">{formatTimeFromSeconds(duration)}</p>

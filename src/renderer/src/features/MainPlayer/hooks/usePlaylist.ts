@@ -8,6 +8,7 @@ export interface UsePlaylistReturn {
   addRandomSongs: () => Promise<void>
   removeFromPlaylist: (playlistItemId: string) => void
   moveItem: (songId: string, underSongId: string) => void
+  toggleSegue: (playlistItemId: string) => void
 }
 
 export function usePlaylist(): UsePlaylistReturn {
@@ -45,5 +46,13 @@ export function usePlaylist(): UsePlaylistReturn {
     })
   }
 
-  return { playlist, addToPlaylist, addRandomSongs, removeFromPlaylist, moveItem }
+  const toggleSegue = (playlistItemId: string): void => {
+    setPlaylist((prev) =>
+      prev.map((item) =>
+        item.id === playlistItemId ? { ...item, segue: !item.segue } : item
+      )
+    )
+  }
+
+  return { playlist, addToPlaylist, addRandomSongs, removeFromPlaylist, moveItem, toggleSegue }
 }
