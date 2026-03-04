@@ -28,6 +28,7 @@ function Playlist(): React.JSX.Element {
             artwork={song.artwork || ''}
             segue={false}
             mainPlayer={player.id}
+            progress={player.duration > 0 ? player.currentTime / player.duration : 0}
           />
         )
       })}

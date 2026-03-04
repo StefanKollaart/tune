@@ -10,6 +10,7 @@ function PlaylistItem({
   segue,
   showDropIndicator = false,
   mainPlayer,
+  progress,
   onDragOver,
   setDrag,
   onDrop
@@ -23,18 +24,32 @@ function PlaylistItem({
   showDropIndicator?: boolean
   isDragging?: boolean
   mainPlayer?: 'A' | 'B' | false
+  progress?: number
   onDragOver?: () => void
   setDrag?: (itemId: string) => void
   onDrop?: () => void
 }): React.JSX.Element {
-  const bgColor = mainPlayer ? (mainPlayer === 'A' ? 'bg-primary-600' : 'bg-secondary-600') : false
+  const bgColor = mainPlayer ? (mainPlayer === 'A' ? 'bg-primary-600' : 'bg-secondary-600') : null
+  const bgColorTransparent = mainPlayer
+    ? mainPlayer === 'A'
+      ? 'bg-primary-600/35'
+      : 'bg-secondary-600/35'
+    : null
   const accentColor = mainPlayer ? 'text-white' : 'text-gray-400'
 
   return (
-    <div className={`relative pe-2 p-1 mb-2 rounded-md ${bgColor ?? ''}`}>
+    <div
+      className={`relative pe-2 p-1 mb-2 rounded-md overflow-hidden ${bgColorTransparent ?? ''}`}
+    >
+      {mainPlayer && (
+        <div
+          className={`absolute inset-y-0 left-0 ${bgColor}`}
+          style={{ width: `${(progress ?? 0) * 100}%` }}
+        />
+      )}
       {showDropIndicator && <div className="absolute inset-0 bg-white opacity-25 rounded-md"></div>}
       <div
-        className="flex gap-4 items-center"
+        className="relative flex gap-4 items-center"
         draggable={!!setDrag}
         onDragStart={setDrag ? () => setDrag(id) : undefined}
         onDragOver={onDragOver}
