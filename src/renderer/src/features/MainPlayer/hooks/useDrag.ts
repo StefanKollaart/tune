@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-interface useDragType {
+interface UseDragType {
   draggedItem: string | null
   setDraggedItem: (itemId: string | null) => void
   dropTarget: string | null
@@ -8,7 +8,7 @@ interface useDragType {
   handleDrop: () => void
 }
 
-export function useDrag(moveItem: (songId: string, underSongId: string) => void): useDragType {
+export function useDrag(moveItem: (songId: string, underSongId: string) => void): UseDragType {
   const [draggedItem, setDraggedItem] = useState<null | string>(null)
   const [dropTarget, setDropTarget] = useState<null | string>(null)
 

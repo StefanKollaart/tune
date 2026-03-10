@@ -1,21 +1,7 @@
 import { formatTimeFromSeconds } from '@renderer/helpers/timeHelpers'
 import { ArrowDown } from 'lucide-react'
 
-function PlaylistItem({
-  id,
-  title,
-  artist,
-  duration,
-  artwork,
-  segue,
-  showDropIndicator = false,
-  mainPlayer,
-  progress,
-  onDragOver,
-  setDrag,
-  onDrop,
-  onToggleSegue
-}: {
+type PlaylistItemProps = {
   id: string
   title: string
   artist: string
@@ -30,7 +16,23 @@ function PlaylistItem({
   setDrag?: (itemId: string) => void
   onDrop?: () => void
   onToggleSegue?: () => void
-}): React.JSX.Element {
+}
+
+function PlaylistItem({
+  id,
+  title,
+  artist,
+  duration,
+  artwork,
+  segue,
+  showDropIndicator = false,
+  mainPlayer,
+  progress,
+  onDragOver,
+  setDrag,
+  onDrop,
+  onToggleSegue
+}: PlaylistItemProps): React.JSX.Element {
   const bgColor = mainPlayer ? (mainPlayer === 'A' ? 'bg-primary-600' : 'bg-secondary-600') : null
   const bgColorTransparent = mainPlayer
     ? mainPlayer === 'A'

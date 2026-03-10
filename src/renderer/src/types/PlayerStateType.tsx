@@ -9,5 +9,3 @@ export type PlayerStateType = {
   volume: number
   loadedAt: number | null
 }
-
-export type PlaybackState = 'stopped' | 'playing' | 'paused'
