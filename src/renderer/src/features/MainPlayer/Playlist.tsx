@@ -30,6 +30,7 @@ function Playlist(): React.JSX.Element {
             duration={song.duration}
             artwork={song.artwork || ''}
             segue={player.playerState.currentTrack!.segue ?? false}
+            segueDisabled={playlist.length === 0}
             onToggleSegue={() => player.toggleSegue()}
             mainPlayer={player.playerState.id}
             progress={player.playerState.duration > 0 ? player.playerState.currentTime / player.playerState.duration : 0}
@@ -48,6 +49,7 @@ function Playlist(): React.JSX.Element {
             duration={song.duration}
             artwork={song.artwork || ''}
             segue={playlistItem.segue ?? false}
+            segueDisabled={playlistItem.id === playlist[playlist.length - 1].id}
             onToggleSegue={() => toggleSegue(playlistItem.id)}
             showDropIndicator={dropTarget === playlistItem.id}
             isDragging={draggedItem === playlistItem.id}

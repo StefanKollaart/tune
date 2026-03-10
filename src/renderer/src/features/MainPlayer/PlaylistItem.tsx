@@ -8,6 +8,7 @@ type PlaylistItemProps = {
   duration: number
   artwork: string
   segue: boolean
+  segueDisabled?: boolean
   showDropIndicator?: boolean
   mainPlayer?: 'A' | 'B' | false
   progress?: number
@@ -24,6 +25,7 @@ function PlaylistItem({
   duration,
   artwork,
   segue,
+  segueDisabled = false,
   showDropIndicator = false,
   mainPlayer,
   progress,
@@ -72,8 +74,9 @@ function PlaylistItem({
         </div>
         <div className={`ml-auto text-sm flex items-center ${accentColor}`}>
           <button
-            className={`cursor-pointer p-1 rounded-md ${segue ? 'bg-white text-stone-900' : ''}`}
-            onClick={onToggleSegue}
+            className={`p-1 rounded-md ${segueDisabled ? 'opacity-25 cursor-not-allowed' : 'cursor-pointer'} ${segue ? 'bg-white text-stone-900' : ''}`}
+            onClick={segueDisabled ? undefined : onToggleSegue}
+            disabled={segueDisabled}
           >
             <ArrowDown size={20} />
           </button>

@@ -2,12 +2,14 @@ import AudioMeter from '@renderer/components/AudioMeter/AudioMeter'
 import MediaControls from '@renderer/components/MediaControls/MediaControls'
 import ProgressBar from '@renderer/components/ProgressBar/ProgressBar'
 import { usePlayersContext } from '@renderer/context/PlayersContext'
+import { usePlaylistContext } from '@renderer/context/PlaylistContext'
 import MainPlayerArtwork from './MainPlayerArtwork'
 import MainPlayerData from './MainPlayerData'
 
 function MainPlayer({ playerId }: { playerId: 'A' | 'B' }): React.JSX.Element {
   const { playerA, playerB } = usePlayersContext()
-  const { playerState, play, pause, stop, updateTime } = playerId === 'A' ? playerA : playerB
+  const { playerState, play, pause, stop, updateTime, toggleSegue } = playerId === 'A' ? playerA : playerB
+  const { playlist } = usePlaylistContext()
 
   const playerColor = playerId === 'A' ? 'primary' : 'secondary'
   const playerBackgroundColor = playerColor === 'primary' ? 'bg-primary-600' : 'bg-secondary-600'
@@ -22,12 +24,15 @@ function MainPlayer({ playerId }: { playerId: 'A' | 'B' }): React.JSX.Element {
           />
         </div>
         <div className="flex-1 ps-2 min-w-0">
-          <MainPlayerData song={playerState.currentTrack?.song} currentTime={playerState.currentTime} />
+          <MainPlayerData currentTrack={playerState.currentTrack} currentTime={playerState.currentTime} />
           <div className="mb-4">
             <MediaControls
               isPlaying={playerState.isPlaying}
+              segue={playerState.currentTrack?.segue ?? false}
+              segueDisabled={playlist.length === 0}
               onPlayPause={() => (playerState.isPlaying ? pause() : play())}
               onStop={stop}
+              onToggleSegue={toggleSegue}
             />
           </div>
         </div>

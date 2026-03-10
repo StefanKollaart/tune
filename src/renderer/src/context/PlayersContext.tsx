@@ -13,8 +13,18 @@ export function PlayersProvider({ children }: { children: React.ReactNode }): Re
   const { playlist, removeFromPlaylist } = usePlaylistContext()
   const loadOrderCounter = useRef(0)
 
-  const playerA = useAudioPlayer('A', playlist, removeFromPlaylist, loadOrderCounter)
-  const playerB = useAudioPlayer('B', playlist, removeFromPlaylist, loadOrderCounter)
+  const onMixpointReachedA = useRef<() => void>(() => {})
+  const onMixpointReachedB = useRef<() => void>(() => {})
+
+  const playerA = useAudioPlayer('A', playlist, removeFromPlaylist, loadOrderCounter, onMixpointReachedA)
+  const playerB = useAudioPlayer('B', playlist, removeFromPlaylist, loadOrderCounter, onMixpointReachedB)
+
+  onMixpointReachedA.current = () => {
+    if (playlist.length > 0) playerB.loadTrack(playlist[0])
+  }
+  onMixpointReachedB.current = () => {
+    if (playlist.length > 0) playerA.loadTrack(playlist[0])
+  }
 
   return <PlayersContext.Provider value={{ playerA, playerB }}>{children}</PlayersContext.Provider>
 }

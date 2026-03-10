@@ -26,7 +26,8 @@ export function useAudioPlayer(
   playerId: 'A' | 'B',
   playlist: PlaylistItemType[],
   removeFromPlaylist: (playlistItemId: string) => void,
-  loadOrderCounter: React.RefObject<number>
+  loadOrderCounter: React.RefObject<number>,
+  onMixpointReached: React.RefObject<() => void>
 ): UseAudioPlayerType {
   const [playerState, setPlayerState] = useState<PlayerStateType>({
     ...initialPlayerState,
@@ -43,6 +44,7 @@ export function useAudioPlayer(
 
       audio.src = `file://${playlistItem.song.filePath}`
       audio.load()
+      audio.play()
 
       setPlayerState((prev) => ({
         ...prev,
@@ -151,17 +153,33 @@ export function useAudioPlayer(
     const intervalId = setInterval(() => {
       const audio = audioRef.current
       if (audio && !audio.paused) {
-        setPlayerState((prev) => ({
-          ...prev,
-          duration: audio.duration,
-          currentTime: audio.currentTime,
-          volume: getVolumeDots(analyserRef.current)
-        }))
+        setPlayerState((prev) => {
+          const track = prev.currentTrack
+          const currentTime = audio.currentTime
+
+          if (track?.segue && !track.segueTriggered && currentTime >= track.mixpoint) {
+            onMixpointReached.current()
+            return {
+              ...prev,
+              duration: audio.duration,
+              currentTime,
+              volume: getVolumeDots(analyserRef.current),
+              currentTrack: { ...track, segueTriggered: true }
+            }
+          }
+
+          return {
+            ...prev,
+            duration: audio.duration,
+            currentTime,
+            volume: getVolumeDots(analyserRef.current)
+          }
+        })
       }
     }, 100)
 
     return () => clearInterval(intervalId)
-  }, [])
+  }, [onMixpointReached])
 
   const toggleSegue = (): void => {
     setPlayerState((prev) => {

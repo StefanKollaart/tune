@@ -1,13 +1,19 @@
-import { Play, Pause, Square, SkipForward } from 'lucide-react'
+import { Play, Pause, Square, ArrowDown } from 'lucide-react'
 
 function MediaControls({
   isPlaying,
+  segue,
+  segueDisabled,
   onPlayPause,
-  onStop
+  onStop,
+  onToggleSegue
 }: {
   isPlaying: boolean
+  segue: boolean
+  segueDisabled: boolean
   onPlayPause: () => void
   onStop: () => void
+  onToggleSegue: () => void
 }): React.JSX.Element {
   return (
     <div className="flex gap-4">
@@ -17,7 +23,13 @@ function MediaControls({
         <Play size={24} onClick={onPlayPause} />
       )}
       <Square size={24} onClick={onStop} />
-      <SkipForward size={24} />
+      <button
+        className={`rounded-md ${segueDisabled ? 'opacity-25 cursor-not-allowed' : 'cursor-pointer'} ${segue ? 'bg-white text-stone-900' : ''}`}
+        onClick={segueDisabled ? undefined : onToggleSegue}
+        disabled={segueDisabled}
+      >
+        <ArrowDown size={24} />
+      </button>
     </div>
   )
 }

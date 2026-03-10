@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+@keyframes blink-warning {
+  0%, 100% { color: white; }
+  50% { color: #f87171; }
+}
+
+.blink-warning {
+  animation: blink-warning 1.5s ease-in-out infinite;
+}
+
 @theme {
   --color-primary-50: #eff6ff;
   --color-primary-100: #dbeafe;

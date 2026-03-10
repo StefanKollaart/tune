@@ -17,6 +17,7 @@ export function usePlaylist(): UsePlaylistReturn {
   const addToPlaylist = (song: SongType): void => {
     const playlistItem: PlaylistItemType = {
       id: crypto.randomUUID(),
+      mixpoint: song.duration - 3,
       song
     }
     setPlaylist((prevPlaylist) => [...prevPlaylist, playlistItem])
@@ -42,6 +43,12 @@ export function usePlaylist(): UsePlaylistReturn {
       const updatedPlaylist = [...prev]
       const [movedSong] = updatedPlaylist.splice(songIndex, 1)
       updatedPlaylist.splice(underSongIndex, 0, movedSong)
+
+      const newIndex = updatedPlaylist.findIndex((item) => item.id === songId)
+      if (newIndex === updatedPlaylist.length - 1 && movedSong.segue) {
+        updatedPlaylist[newIndex] = { ...movedSong, segue: false }
+      }
+
       return updatedPlaylist
     })
   }
