@@ -14,7 +14,7 @@ function MainPlayerData({
       ? currentTrack.mixpoint
       : (song?.duration ?? 0)
 
-  const timeRemaining = countdownTarget - currentTime
+  const timeRemaining = Math.max(0, countdownTarget - currentTime)
   const isWarning = song && timeRemaining < 5
 
   return (

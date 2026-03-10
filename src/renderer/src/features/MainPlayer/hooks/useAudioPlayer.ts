@@ -95,6 +95,7 @@ export function useAudioPlayer(
       isPlaying: false,
       currentTrack: null,
       currentTime: 0,
+      volume: 0,
       loadedAt: null
     }))
   }
@@ -113,6 +114,7 @@ export function useAudioPlayer(
       currentTrack: null,
       isPlaying: false,
       currentTime: 0,
+      volume: 0,
       loadedAt: null
     }))
   }, [])

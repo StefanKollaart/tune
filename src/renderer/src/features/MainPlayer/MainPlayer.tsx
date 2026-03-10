@@ -8,7 +8,8 @@ import MainPlayerData from './MainPlayerData'
 
 function MainPlayer({ playerId }: { playerId: 'A' | 'B' }): React.JSX.Element {
   const { playerA, playerB } = usePlayersContext()
-  const { playerState, play, pause, stop, updateTime, toggleSegue } = playerId === 'A' ? playerA : playerB
+  const { playerState, play, pause, stop, updateTime, toggleSegue } =
+    playerId === 'A' ? playerA : playerB
   const { playlist } = usePlaylistContext()
 
   const playerColor = playerId === 'A' ? 'primary' : 'secondary'
@@ -24,10 +25,15 @@ function MainPlayer({ playerId }: { playerId: 'A' | 'B' }): React.JSX.Element {
           />
         </div>
         <div className="flex-1 ps-2 min-w-0">
-          <MainPlayerData currentTrack={playerState.currentTrack} currentTime={playerState.currentTime} />
+          <MainPlayerData
+            currentTrack={playerState.currentTrack}
+            currentTime={playerState.currentTime}
+          />
           <div className="mb-4">
             <MediaControls
               isPlaying={playerState.isPlaying}
+              hasTrack={!!playerState.currentTrack}
+              playDisabled={!playerState.currentTrack && playlist.length === 0}
               segue={playerState.currentTrack?.segue ?? false}
               segueDisabled={playlist.length === 0}
               onPlayPause={() => (playerState.isPlaying ? pause() : play())}
