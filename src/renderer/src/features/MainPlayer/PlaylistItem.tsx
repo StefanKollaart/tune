@@ -9,7 +9,6 @@ type PlaylistItemProps = {
   artwork: string
   segue: boolean
   showDropIndicator?: boolean
-  isDragging?: boolean
   mainPlayer?: 'A' | 'B' | false
   progress?: number
   onDragOver?: () => void
